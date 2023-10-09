@@ -1,0 +1,26 @@
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  // align-items: center;
+}
+.title {
+  margin-left: 10px;
+  display: flex;
+  font-size: large;
+  font-weight: bold;
+}
+.subtitle-right {
+  margin-right: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: right;
+}
+
+.flex-item {
+  margin: 10px;
+}
+.x {
+  font-size: large;
+  font-weight: bold;
+}
