@@ -17,8 +17,12 @@ import { MapServiceService } from '../shared/services/map-service.service';
 export class MapWindowComponent implements OnInit, OnDestroy {
   @ViewChild('mapViewNode', { static: true }) mapViewEl!: ElementRef;
   public view: any = null;
+  public mapcontextmenu: HTMLElement = document.createElement('div');
 
-  constructor(private mapService: MapServiceService) {}
+  constructor(private mapService: MapServiceService) {
+    this.mapcontextmenu.style.backgroundColor = 'white';
+    this.mapcontextmenu.style.padding = '2px';
+  }
 
   initializeMap(): Promise<any> {
     const container = this.mapViewEl.nativeElement;
@@ -49,8 +53,35 @@ export class MapWindowComponent implements OnInit, OnDestroy {
     // // Add the widget to the top-right corner of the view
     // view.ui.add(bkExpand, 'top-right');
 
+    view.on('click', (event) => {
+      view.popupEnabled = false;
+
+      if (event.button == 2) {
+        view.ui.remove(this.mapcontextmenu);
+        this.restyleMapContextMenu(event);
+
+        //Add an angular component to map
+        //-------------------------------
+        // let switchbutton: any =
+        //   document.getElementsByTagName('app-switch-map')[0];
+        // switchbutton.style.top = (event as any).screenPoint.y + 'px';
+        // switchbutton.style.left = (event as any).screenPoint.x + 'px';
+        // view.ui.add(switchbutton, 'manual');
+
+        view.ui.add(this.mapcontextmenu, 'manual');
+
+        console.log(
+          'screenpoint: ' +
+            this.mapcontextmenu.style.top +
+            ' ; ' +
+            this.mapcontextmenu.style.left
+        );
+        console.log('map point', event.mapPoint);
+      }
+    });
+
     // bonus - how many bookmarks in the webmap?
-    webmap.when(() => {
+    view.when(() => {
       if (webmap.bookmarks && webmap.bookmarks.length) {
         console.log('Bookmarks: ', webmap.bookmarks.length);
       } else {
@@ -73,5 +104,13 @@ export class MapWindowComponent implements OnInit, OnDestroy {
     if (this.view) {
       this.view.destroy();
     }
+  }
+
+  restyleMapContextMenu(event: any) {
+    let xcoord = Math.round(event.mapPoint.x * 1000) / 1000;
+    let ycoord = Math.round(event.mapPoint.y * 1000) / 1000;
+    this.mapcontextmenu.innerHTML = xcoord + ', ' + ycoord;
+    this.mapcontextmenu.style.top = (event as any).screenPoint.y + 'px';
+    this.mapcontextmenu.style.left = (event as any).screenPoint.x + 'px';
   }
 }
