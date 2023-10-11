@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MapServiceService } from '../shared/services/map-service.service';
-import MapView from '@arcgis/core/views/MapView';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-toolbar',
@@ -16,8 +16,8 @@ export class ToolbarComponent implements OnInit {
   constructor(private mapService: MapServiceService) {}
 
   ngOnInit(): void {
-    this.mapService.mapViewEvent.subscribe((mapview: MapView) => {
+    this.mapService.mapChangedEvent.pipe(tap(()=>{
       this.layerCount = this.mapService.GetLayerCount().toString();
-    });
+    })).subscribe();
   }
 }

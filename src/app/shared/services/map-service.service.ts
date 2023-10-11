@@ -14,12 +14,16 @@ export class MapServiceService {
   @Output()
   mapViewEvent = new EventEmitter<MapView>();
 
+  @Output()
+  mapChangedEvent = new EventEmitter<MapView>();
+
   constructor() {}
 
   MapViewChanged(mapView: MapView) {
     this.mapView = mapView;
     this.container = this.mapView.container;
     this.mapViewEvent.emit(this.mapView);
+    this.mapChangedEvent.emit(this.mapView);
   }
 
   ChangeWebMap(portalItemId: string) {
@@ -28,14 +32,10 @@ export class MapServiceService {
         id: portalItemId,
       },
     });
-
-    this.mapView = new MapView({
-      container: this.container,
-      map: webmap,
-    });
-
-    this.mapView.when(() => {
-      this.mapViewEvent.emit(this.mapView);
+    this.mapView.map = webmap;
+    
+    webmap.when(()=>{
+      this.mapChangedEvent.emit(this.mapView);
     });
   }
 

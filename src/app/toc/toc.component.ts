@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import MapView from '@arcgis/core/views/MapView';
 import { MapServiceService } from '../shared/services/map-service.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-toc',
@@ -22,11 +23,11 @@ export class TocComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.mapService.mapViewEvent.subscribe((mapview: MapView) => {
+    this.mapService.mapViewEvent.pipe(tap((mapview: MapView)=>{
       // empty container
-      this.renderer.setProperty(this.mapViewEl.nativeElement, 'innerHTML', '');
-      //fill container with new layerlist
+      this.renderer.setProperty(this.mapViewEl.nativeElement, 'textContent', '');
+      //fill container with layerlist
       this.mapService.FillLayerList(this.mapViewEl.nativeElement, mapview);
-    });
+    })).subscribe();
   }
 }

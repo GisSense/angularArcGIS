@@ -54,9 +54,11 @@ export class MapWindowComponent implements OnInit, OnDestroy {
     // view.ui.add(bkExpand, 'top-right');
 
     view.on('click', (event) => {
-      view.popupEnabled = false;
+      view.closePopup();
+      view.ui.remove(this.mapcontextmenu);
 
       if (event.button == 2) {
+        view.popupEnabled = false;
         view.ui.remove(this.mapcontextmenu);
         this.restyleMapContextMenu(event);
 
@@ -77,6 +79,7 @@ export class MapWindowComponent implements OnInit, OnDestroy {
             this.mapcontextmenu.style.left
         );
         console.log('map point', event.mapPoint);
+        view.popupEnabled = true;
       }
     });
 
